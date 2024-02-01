@@ -16,6 +16,7 @@ import concurrent.futures as cf
 from multiprocessing import cpu_count
 from tqdm import tqdm
 import psutil
+from scipy.ndimage import median_filter, convolve
 
 
 def brighten(image, factor):
@@ -123,7 +124,27 @@ def edge_detection(image, kernel):
                 # black and white only to add colors include c below in brackets
                 new_image.array[x, y]  = total
     return new_image
+'''
+def median_filter(image, kernel_size):
+    x_pixels, y_pixels, num_channels = image.array.shape
+    new_image = Image(x_pixels=x_pixels, y_pixels=y_pixels, num_channels=num_channels)
 
+    neighbor_range = kernel_size // 2
+
+    for x in range(x_pixels):
+        for y in range(y_pixels):
+            for c in range(num_channels):
+                values = []
+                for x_i in range(max(0, x-neighbor_range), min(x_pixels, x+neighbor_range+1)):
+                    for y_i in range(max(0, y-neighbor_range), min(y_pixels, y+neighbor_range+1)):
+                        values.append(image.array[x_i, y_i, c])
+
+                values.sort()
+                median_index = len(values) // 2
+                new_image.array[x, y, c] = values[median_index]
+
+    return new_image
+'''
 
 
 
